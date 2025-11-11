@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  type MouseEventHandler,
+  type DragEventHandler,
+} from 'react';
 // Importação simulada de ícones do Lucide-React (assumindo que estão disponíveis no ambiente)
 import {
   Plus,
@@ -11,9 +17,68 @@ import {
   Filter,
 } from 'lucide-react';
 
-// --- SEÇÃO 1: DADOS INICIAIS E UTILS ---
+// --- SEÇÃO 1: TIPAGEM DE DADOS (INTERFACES) ---
 
-const INITIAL_LISTS = [
+/**
+ * @interface IList
+ * Define a estrutura de uma Lista (Coluna) no Kanban.
+ */
+interface IList {
+  id: string;
+  title: string;
+  colorVar: string; // Variável CSS para a cor da lista
+  order: number;
+}
+
+/**
+ * @interface ICard
+ * Define a estrutura de um Cartão (Tarefa) no Kanban.
+ */
+interface ICard {
+  id: string;
+  listId: string;
+  title: string;
+  description: string;
+  createdAt: number; // Timestamp
+}
+
+/**
+ * @interface IKanbanState
+ * Define o estado global do aplicativo Kanban.
+ */
+interface IKanbanState {
+  lists: IList[];
+  cards: ICard[];
+  theme: 'light' | 'dark';
+  searchTerm: string;
+}
+
+/**
+ * @interface IKanbanStore
+ * Define o tipo de retorno do hook `useKanbanStore`, combinando o estado e as ações.
+ */
+interface IKanbanStore extends IKanbanState {
+  setCardList: (cardId: string, newListId: string) => void;
+  addCard: (listId: string, title: string, description: string) => void;
+  updateCard: (
+    cardId: string,
+    newTitle: string,
+    newDescription: string
+  ) => void;
+  deleteCard: (cardId: string) => void;
+  addList: (title: string) => void;
+  toggleTheme: () => void;
+  reorderCards: (
+    sourceListId: string | null, // Ignorado no D&D nativo simples, mas mantido na assinatura
+    cardId: string,
+    targetListId: string
+  ) => void;
+  setSearchTerm: (term: string) => void;
+}
+
+// --- SEÇÃO 2: DADOS INICIAIS E UTILS TIPADOS ---
+
+const INITIAL_LISTS: IList[] = [
   // Nota: As cores foram substituídas por nomes de variáveis CSS para o tema
   { id: 'list-1', title: 'A Fazer', colorVar: '--color-list-red', order: 0 },
   {
@@ -30,7 +95,7 @@ const INITIAL_LISTS = [
   },
 ];
 
-const INITIAL_CARDS = [
+const INITIAL_CARDS: ICard[] = [
   {
     id: 'card-1',
     listId: 'list-1',
@@ -67,11 +132,12 @@ const INITIAL_CARDS = [
 const STORAGE_KEY = 'kanban-board-state';
 
 // Função utilitária para buscar o estado inicial
-const getInitialState = () => {
+const getInitialState = (): IKanbanState => {
   try {
     const storedState = localStorage.getItem(STORAGE_KEY);
     if (storedState) {
-      return JSON.parse(storedState);
+      // Cast explícito para o tipo esperado
+      return JSON.parse(storedState) as IKanbanState;
     }
   } catch (error) {
     console.error('Erro ao carregar estado do localStorage:', error);
@@ -84,11 +150,12 @@ const getInitialState = () => {
   };
 };
 
-// --- SEÇÃO 2: LÓGICA DO ESTADO (ZUSTAND SIMULADO) E PERSISTÊNCIA ---
+// --- SEÇÃO 3: LÓGICA DO ESTADO (ZUSTAND SIMULADO) E PERSISTÊNCIA TIPADA ---
 
 // Este hook simula o store central (Zustand) para todo o aplicativo.
-const useKanbanStore = () => {
-  const [state, setState] = useState(getInitialState);
+const useKanbanStore = (): IKanbanStore => {
+  // useState tipado
+  const [state, setState] = useState<IKanbanState>(getInitialState);
 
   // Efeito para persistir o estado sempre que ele mudar e aplicar o tema
   useEffect(() => {
@@ -96,7 +163,7 @@ const useKanbanStore = () => {
     document.documentElement.className = state.theme; // Aplica a classe de tema (light/dark)
   }, [state]);
 
-  const setCardList = useCallback((cardId, newListId) => {
+  const setCardList = useCallback((cardId: string, newListId: string): void => {
     setState((prevState) => ({
       ...prevState,
       cards: prevState.cards.map((card) =>
@@ -105,32 +172,38 @@ const useKanbanStore = () => {
     }));
   }, []);
 
-  const addCard = useCallback((listId, title, description) => {
-    const newCard = {
-      id: `card-${Date.now()}`,
-      listId,
-      title,
-      description,
-      createdAt: Date.now(),
-    };
-    setState((prevState) => ({
-      ...prevState,
-      cards: [...prevState.cards, newCard],
-    }));
-  }, []);
+  const addCard = useCallback(
+    (listId: string, title: string, description: string): void => {
+      const newCard: ICard = {
+        id: `card-${Date.now()}`,
+        listId,
+        title,
+        description,
+        createdAt: Date.now(),
+      };
+      setState((prevState) => ({
+        ...prevState,
+        cards: [...prevState.cards, newCard],
+      }));
+    },
+    []
+  );
 
-  const updateCard = useCallback((cardId, newTitle, newDescription) => {
-    setState((prevState) => ({
-      ...prevState,
-      cards: prevState.cards.map((card) =>
-        card.id === cardId
-          ? { ...card, title: newTitle, description: newDescription }
-          : card
-      ),
-    }));
-  }, []);
+  const updateCard = useCallback(
+    (cardId: string, newTitle: string, newDescription: string): void => {
+      setState((prevState) => ({
+        ...prevState,
+        cards: prevState.cards.map((card) =>
+          card.id === cardId
+            ? { ...card, title: newTitle, description: newDescription }
+            : card
+        ),
+      }));
+    },
+    []
+  );
 
-  const deleteCard = useCallback((cardId) => {
+  const deleteCard = useCallback((cardId: string): void => {
     setState((prevState) => ({
       ...prevState,
       cards: prevState.cards.filter((card) => card.id !== cardId),
@@ -138,8 +211,8 @@ const useKanbanStore = () => {
   }, []);
 
   const addList = useCallback(
-    (title) => {
-      const newList = {
+    (title: string): void => {
+      const newList: IList = {
         id: `list-${Date.now()}`,
         title,
         colorVar: '--color-list-yellow',
@@ -153,14 +226,14 @@ const useKanbanStore = () => {
     [state.lists.length]
   );
 
-  const toggleTheme = useCallback(() => {
+  const toggleTheme = useCallback((): void => {
     setState((prevState) => ({
       ...prevState,
       theme: prevState.theme === 'light' ? 'dark' : 'light',
     }));
   }, []);
 
-  const setSearchTerm = useCallback((term) => {
+  const setSearchTerm = useCallback((term: string): void => {
     setState((prevState) => ({
       ...prevState,
       searchTerm: term,
@@ -168,7 +241,12 @@ const useKanbanStore = () => {
   }, []);
 
   const reorderCards = useCallback(
-    (sourceListId, cardId, targetListId) => {
+    (
+      sourceListId: string | null,
+      cardId: string,
+      targetListId: string
+    ): void => {
+      // Nota: No D&D nativo simples, sourceListId não é usado aqui, mas setCardList faz a atualização
       setCardList(cardId, targetListId);
     },
     [setCardList]
@@ -187,17 +265,23 @@ const useKanbanStore = () => {
   };
 };
 
-// --- SEÇÃO 3: COMPONENTES REUTILIZÁVEIS COM CSS PURO ---
+// --- SEÇÃO 4: COMPONENTES REUTILIZÁVEIS TIPADOS ---
+
+// Propriedades para o Componente Button
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode;
+  className?: string;
+  variant?: 'primary' | 'secondary' | 'destructive' | 'ghost';
+  // O restante das props são repassadas via React.ButtonHTMLAttributes
+}
 
 // Componente: Button (Botão Simples)
-const Button = ({
+const Button: React.FC<ButtonProps> = ({
   children,
   className = '',
   variant = 'primary',
   ...props
 }) => {
-  // A classe principal 'button-base' define os estilos base.
-  // As classes de 'variant' definem as cores.
   return (
     <button className={`button-base button-${variant} ${className}`} {...props}>
       {children}
@@ -205,22 +289,36 @@ const Button = ({
   );
 };
 
+// Propriedades para o Componente CardComponent
+interface CardComponentProps {
+  card: ICard;
+  onEditClick: (card: ICard) => void;
+  onDelete: (cardId: string) => void;
+  listColorVar: string;
+}
+
 // Componente: CardComponent (Exibição de Cartão na Lista)
-const CardComponent = ({ card, onEditClick, onDelete, listColorVar }) => {
+const CardComponent: React.FC<CardComponentProps> = ({
+  card,
+  onEditClick,
+  onDelete,
+  listColorVar,
+}) => {
   const formattedDate = new Date(card.createdAt).toLocaleDateString('pt-BR', {
     day: '2-digit',
     month: 'short',
   });
 
-  // Funções para Drag and Drop Nativo
-  const handleDragStart = (e) => {
+  // Tipagem para evento DragStart
+  const handleDragStart: DragEventHandler<HTMLDivElement> = (e) => {
     e.dataTransfer.setData('cardId', card.id);
     e.dataTransfer.effectAllowed = 'move';
-    e.currentTarget.classList.add('dragging-opacity');
+    (e.currentTarget as HTMLDivElement).classList.add('dragging-opacity');
   };
 
-  const handleDragEnd = (e) => {
-    e.currentTarget.classList.remove('dragging-opacity');
+  // Tipagem para evento DragEnd
+  const handleDragEnd: DragEventHandler<HTMLDivElement> = (e) => {
+    (e.currentTarget as HTMLDivElement).classList.remove('dragging-opacity');
   };
 
   return (
@@ -237,7 +335,7 @@ const CardComponent = ({ card, onEditClick, onDelete, listColorVar }) => {
         <Button
           variant="ghost"
           className="card-delete-btn"
-          onClick={(e) => {
+          onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
             e.stopPropagation();
             onDelete(card.id);
           }}
@@ -253,12 +351,26 @@ const CardComponent = ({ card, onEditClick, onDelete, listColorVar }) => {
   );
 };
 
-// Componente: CardModal (Modal de Edição de Cartão)
-const CardModal = ({ card, onClose, onSave, onDelete }) => {
-  const [title, setTitle] = useState(card.title);
-  const [description, setDescription] = useState(card.description);
+// Propriedades para o Componente CardModal
+interface CardModalProps {
+  card: ICard;
+  onClose: () => void;
+  onSave: (cardId: string, newTitle: string, newDescription: string) => void;
+  onDelete: (cardId: string) => void;
+}
 
-  const handleSubmit = (e) => {
+// Componente: CardModal (Modal de Edição de Cartão)
+const CardModal: React.FC<CardModalProps> = ({
+  card,
+  onClose,
+  onSave,
+  onDelete,
+}) => {
+  const [title, setTitle] = useState<string>(card.title);
+  const [description, setDescription] = useState<string>(card.description);
+
+  // Tipagem para evento de formulário
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSave(card.id, title, description);
     onClose();
@@ -268,7 +380,7 @@ const CardModal = ({ card, onClose, onSave, onDelete }) => {
     <div className="modal-backdrop" onClick={onClose}>
       <div
         className="modal-content"
-        onClick={(e) => e.stopPropagation()} // Evita fechar ao clicar dentro
+        onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()} // Evita fechar ao clicar dentro
       >
         <div className="modal-header">
           <h2 className="modal-title">Editar Cartão</h2>
@@ -298,7 +410,7 @@ const CardModal = ({ card, onClose, onSave, onDelete }) => {
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              rows="4"
+              rows={4}
               className="form-input form-textarea"
               required
             ></textarea>
@@ -323,10 +435,20 @@ const CardModal = ({ card, onClose, onSave, onDelete }) => {
   );
 };
 
-// --- SEÇÃO 4: COMPONENTES DE PÁGINA (LISTA E BOARD) ---
+// --- SEÇÃO 5: COMPONENTES DE PÁGINA TIPADOS (LISTA E BOARD) ---
+
+// Propriedades para o Componente ListView
+interface ListViewProps {
+  list: IList;
+  cards: ICard[];
+  addCard: IKanbanStore['addCard'];
+  reorderCards: IKanbanStore['reorderCards'];
+  onEditCard: (card: ICard) => void;
+  deleteCard: IKanbanStore['deleteCard'];
+}
 
 // Componente: ListView (Coluna/Lista do Kanban)
-const ListView = ({
+const ListView: React.FC<ListViewProps> = ({
   list,
   cards,
   addCard,
@@ -334,10 +456,11 @@ const ListView = ({
   onEditCard,
   deleteCard,
 }) => {
-  const [newCardTitle, setNewCardTitle] = useState('');
-  const [isAdding, setIsAdding] = useState(false);
+  const [newCardTitle, setNewCardTitle] = useState<string>('');
+  const [isAdding, setIsAdding] = useState<boolean>(false);
 
-  const handleAddCard = (e) => {
+  // Tipagem para evento de formulário
+  const handleAddCard = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (newCardTitle.trim()) {
       addCard(list.id, newCardTitle.trim(), 'Adicione uma descrição aqui.');
@@ -346,22 +469,25 @@ const ListView = ({
     }
   };
 
-  // Funções para Drag and Drop Nativo
-  const handleDragOver = (e) => {
+  // Tipagem para evento DragOver
+  const handleDragOver: DragEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault(); // Necessário para permitir o drop
-    e.currentTarget.classList.add('drag-over-list');
+    (e.currentTarget as HTMLDivElement).classList.add('drag-over-list');
     e.dataTransfer.dropEffect = 'move';
   };
 
-  const handleDragLeave = (e) => {
-    e.currentTarget.classList.remove('drag-over-list');
+  // Tipagem para evento DragLeave
+  const handleDragLeave: DragEventHandler<HTMLDivElement> = (e) => {
+    (e.currentTarget as HTMLDivElement).classList.remove('drag-over-list');
   };
 
-  const handleDrop = (e) => {
+  // Tipagem para evento Drop
+  const handleDrop: DragEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
-    e.currentTarget.classList.remove('drag-over-list');
+    (e.currentTarget as HTMLDivElement).classList.remove('drag-over-list');
     const cardId = e.dataTransfer.getData('cardId');
     if (cardId) {
+      // sourceListId é null porque o D&D nativo simples não nos dá o ID da lista de origem facilmente
       reorderCards(null, cardId, list.id);
     }
   };
@@ -431,37 +557,46 @@ const ListView = ({
   );
 };
 
+// Propriedades para o Componente BoardView
+interface BoardViewProps {
+  store: IKanbanStore;
+}
+
 // Componente: BoardView (Quadro Principal)
-const BoardView = ({ store }) => {
+const BoardView: React.FC<BoardViewProps> = ({ store }) => {
   const {
     lists,
     cards,
     reorderCards,
     addList,
-    addCard,
     searchTerm,
     setSearchTerm,
+    updateCard, // Adicionei para usar no modal
+    deleteCard, // Adicionei para usar no modal
+    addCard, // Adicionei para passar para ListView
   } = store;
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedCard, setSelectedCard] = useState(null);
-  const [newListTitle, setNewListTitle] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  // selectedCard pode ser ICard ou null
+  const [selectedCard, setSelectedCard] = useState<ICard | null>(null);
+  const [newListTitle, setNewListTitle] = useState<string>('');
 
-  const handleEditCard = (card) => {
+  const handleEditCard = (card: ICard): void => {
     setSelectedCard(card);
     setIsModalOpen(true);
   };
 
-  const handleSearchChange = (e) => {
+  // Tipagem para evento de input
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setSearchTerm(e.target.value);
   };
 
-  const filteredCards = cards.filter(
+  const filteredCards: ICard[] = cards.filter(
     (card) =>
       card.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       card.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleAddList = () => {
+  const handleAddList = (): void => {
     if (newListTitle.trim()) {
       addList(newListTitle.trim());
       setNewListTitle('');
@@ -509,10 +644,10 @@ const BoardView = ({ store }) => {
                 key={list.id}
                 list={list}
                 cards={filteredCards.filter((card) => card.listId === list.id)}
-                addCard={store.addCard}
+                addCard={addCard}
                 reorderCards={reorderCards}
                 onEditCard={handleEditCard}
-                deleteCard={store.deleteCard}
+                deleteCard={deleteCard}
               />
             ))}
         </div>
@@ -523,16 +658,25 @@ const BoardView = ({ store }) => {
         <CardModal
           card={selectedCard}
           onClose={() => setIsModalOpen(false)}
-          onSave={store.updateCard}
-          onDelete={store.deleteCard}
+          onSave={updateCard}
+          onDelete={deleteCard}
         />
       )}
     </div>
   );
 };
 
+// Propriedades para o Componente SettingsView
+interface SettingsViewProps {
+  store: IKanbanStore;
+  setCurrentPage: (page: 'board' | 'settings') => void;
+}
+
 // Componente: SettingsView (Página de Configurações)
-const SettingsView = ({ store, setCurrentPage }) => {
+const SettingsView: React.FC<SettingsViewProps> = ({
+  store,
+  setCurrentPage,
+}) => {
   const { theme, toggleTheme } = store;
 
   return (
@@ -587,11 +731,14 @@ const SettingsView = ({ store, setCurrentPage }) => {
   );
 };
 
-// --- SEÇÃO 5: COMPONENTE PRINCIPAL (APP) ---
+// --- SEÇÃO 6: COMPONENTE PRINCIPAL (APP) TIPADO ---
 
-const App = () => {
-  const store = useKanbanStore();
-  const [currentPage, setCurrentPage] = useState('board');
+// Definição do tipo para o estado da página
+type Page = 'board' | 'settings';
+
+const App: React.FC = () => {
+  const store: IKanbanStore = useKanbanStore();
+  const [currentPage, setCurrentPage] = useState<Page>('board');
 
   // Estilos CSS Puros
   const globalStyles = `
@@ -642,7 +789,7 @@ const App = () => {
         }
 
         .app-container {
-            min-height: 100vh;
+            height: 100%;
             background-color: var(--color-bg-light);
             transition: background-color 300ms, color 300ms;
             color: var(--color-text-dark);
@@ -873,15 +1020,17 @@ const App = () => {
         /* List View (Coluna) */
         .list-view {
             flex-shrink: 0;
-            width: 320px; /* 80w ≈ 320px */
+            width: 420px; /* 80w ≈ 320px */
+            height: auto;
             background-color: var(--color-bg-medium);
             padding: 1rem;
             border-radius: 0.75rem;
             box-shadow: 0 10px 15px -3px var(--color-shadow);
-            height: 100%;
+            height: 100vh;
             display: flex;
             flex-direction: column;
             transition: box-shadow 300ms;
+            
         }
         .drag-over-list {
             box-shadow: 0 0 0 2px var(--color-primary);
@@ -918,7 +1067,7 @@ const App = () => {
             color: var(--color-text-medium);
         }
         .list-add-btn:hover {
-             color: var(--color-primary);
+            color: var(--color-primary);
         }
 
         .list-cards-container {
@@ -1128,7 +1277,8 @@ const App = () => {
                 variant={currentPage === 'settings' ? 'primary' : 'ghost'}
                 onClick={() => setCurrentPage('settings')}
               >
-                <Settings className="icon-sm" /> Configurações
+                <Settings className="icon-sm" />
+                Configurações
               </Button>
             </div>
           </div>
