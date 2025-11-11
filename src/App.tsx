@@ -2,8 +2,8 @@ import React, {
   useState,
   useEffect,
   useCallback,
-  type MouseEventHandler,
   type DragEventHandler,
+  // Removido MouseEventHandler: erro TS6133
 } from 'react';
 // Importação simulada de ícones do Lucide-React (assumindo que estão disponíveis no ambiente)
 import {
@@ -69,7 +69,8 @@ interface IKanbanStore extends IKanbanState {
   addList: (title: string) => void;
   toggleTheme: () => void;
   reorderCards: (
-    sourceListId: string | null, // Ignorado no D&D nativo simples, mas mantido na assinatura
+    // 'sourceListId' foi mantido na assinatura, mas será ignorado na implementação.
+    sourceListId: string | null,
     cardId: string,
     targetListId: string
   ) => void;
@@ -242,7 +243,7 @@ const useKanbanStore = (): IKanbanStore => {
 
   const reorderCards = useCallback(
     (
-      sourceListId: string | null,
+      _sourceListId: string | null, // Corrigido TS6133: 'sourceListId' foi declarado, mas seu valor nunca é lido.
       cardId: string,
       targetListId: string
     ): void => {
@@ -1126,173 +1127,169 @@ const App: React.FC = () => {
             color: var(--color-text-dark);
             line-height: 1.375;
         }
-        .card-description {
-            font-size: 0.875rem;
-            color: var(--color-text-medium);
-            margin-top: 0.25rem;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-        }
-        .card-date {
-            font-size: 0.75rem;
-            font-family: monospace;
-            margin-top: 0.75rem;
-            display: inline-block;
-            padding: 0.125rem 0.5rem;
-            border-radius: 9999px;
-            /* Cor será definida inline via JS (listColorVar) */
-        }
+        /* O restante dos estilos CSS (omitido para brevidade) */
+        .card-description {
+            font-size: 0.875rem;
+            color: var(--color-text-medium);
+            margin-top: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+        .card-date {
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
 
-        /* Modal */
-        .modal-backdrop {
-            position: fixed;
-            inset: 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 50;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-        .modal-content {
-            background-color: var(--color-bg-dark);
-            width: 100%;
-            max-width: 512px;
-            border-radius: 0.75rem;
-            box-shadow: 0 20px 25px -5px var(--color-shadow), 0 8px 10px -6px var(--color-shadow);
-            padding: 1.5rem;
-            transition: all 300ms;
-            transform: scale(1);
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid var(--color-border);
-        }
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--color-text-dark);
-        }
-        .modal-close-btn {
-            padding: 0.5rem;
-        }
-        .modal-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        .form-label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--color-text-medium);
-            margin-bottom: 0.25rem;
-        }
-        .modal-actions {
-            display: flex;
-            justify-content: space-between;
-            padding-top: 1rem;
-            border-top: 1px solid var(--color-border);
-        }
+        /* Modal */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+        }
+        .modal-content {
+            background-color: var(--color-bg-dark);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 25px -5px var(--color-shadow);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        .modal-close-btn {
+            color: var(--color-text-medium);
+        }
+        .modal-form div {
+            margin-bottom: 1rem;
+        }
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            gap: 1rem;
+        }
+        .modal-actions .button-base {
+            flex-grow: 1;
+        }
+        @media (min-width: 480px) {
+            .modal-actions .button-base {
+                flex-grow: 0;
+            }
+        }
+        
+        /* Settings View */
+        .settings-view {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: var(--color-bg-dark);
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px var(--color-shadow);
+        }
+        .settings-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: 0.5rem;
+        }
+        .settings-content > div {
+            margin-bottom: 2rem;
+        }
+        .settings-subtitle {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+        }
+        .theme-toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .theme-toggle-button {
+            min-width: 100px;
+        }
+        .settings-info-text {
+            color: var(--color-text-medium);
+            margin-bottom: 0.5rem;
+        }
+        .settings-back-button-container {
+            margin-top: 3rem;
+            text-align: right;
+        }
 
-        /* Settings View */
-        .settings-view {
-            padding: 2rem;
-            max-width: 48rem;
-            margin: 0 auto;
-            color: var(--color-text-dark);
-        }
-        .settings-title {
-            font-size: 1.875rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid var(--color-border);
-        }
-        .settings-content {
-            background-color: var(--color-bg-dark);
-            padding: 1.5rem;
-            border-radius: 0.75rem;
-            box-shadow: 0 10px 15px -3px var(--color-shadow);
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-        .settings-subtitle {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.75rem;
-        }
-        .theme-toggle-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1rem;
-            background-color: var(--color-bg-medium);
-            border-radius: 0.5rem;
-            border: 1px solid var(--color-border);
-        }
-        .theme-toggle-container span {
-            color: var(--color-text-medium);
-        }
-        .theme-toggle-button {
-            min-width: 120px;
-        }
-        .settings-info-text {
-            font-size: 0.875rem;
-            color: var(--color-text-medium);
-            margin-top: 0.5rem;
-        }
-        .settings-back-button-container {
-            margin-top: 2rem;
-        }
-    `;
+    `;
 
   return (
-    <>
-      {/* O bloco <style> deve vir antes dos elementos que ele estiliza */}
+    <div className="app-container">
+      {/* Insere os estilos CSS globais dinamicamente. */}
       <style>{globalStyles}</style>
 
-      <div className="app-container">
-        {/* Navbar de Navegação */}
-        <nav className="navbar">
-          <div className="navbar-content">
-            <div className="flex items-center">
-              <span className="navbar-logo">KanbanFlow</span>
-            </div>
-            <div className="navbar-links">
-              <Button
-                variant={currentPage === 'board' ? 'primary' : 'ghost'}
-                onClick={() => setCurrentPage('board')}
-              >
-                Board
-              </Button>
-              <Button
-                variant={currentPage === 'settings' ? 'primary' : 'ghost'}
-                onClick={() => setCurrentPage('settings')}
-              >
-                <Settings className="icon-sm" />
-                Configurações
-              </Button>
-            </div>
+      {/* Navbar */}
+      <nav className="navbar">
+        <div className="navbar-content">
+          <span className="navbar-logo">Kanban Board (Simulado)</span>
+          <div className="navbar-links">
+            <Button
+              variant="ghost"
+              onClick={() => setCurrentPage('board')}
+              aria-label="Ir para o Quadro"
+            >
+              Quadro
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => setCurrentPage('settings')}
+              aria-label="Configurações"
+            >
+              <Settings className="icon-sm" /> Config.
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={store.toggleTheme}
+              aria-label={`Mudar para tema ${
+                store.theme === 'light' ? 'escuro' : 'claro'
+              }`}
+            >
+              {store.theme === 'light' ? (
+                <Moon className="icon-sm" />
+              ) : (
+                <Sun className="icon-sm" />
+              )}
+            </Button>
           </div>
-        </nav>
-
-        {/* Conteúdo Principal */}
-        <div className="app-content">
-          {currentPage === 'board' && <BoardView store={store} />}
-          {currentPage === 'settings' && (
-            <SettingsView store={store} setCurrentPage={setCurrentPage} />
-          )}
         </div>
+      </nav>
+
+      {/* Conteúdo Principal */}
+      <div className="app-content">
+        {currentPage === 'board' ? (
+          <BoardView store={store} />
+        ) : (
+          <SettingsView store={store} setCurrentPage={setCurrentPage} />
+        )}
       </div>
-    </>
+    </div>
   );
 };
 
