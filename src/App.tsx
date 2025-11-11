@@ -1135,7 +1135,7 @@ const App: React.FC = () => {
             margin-bottom: 0.5rem;
         }
         .card-date {
-            font-size: 0.75rem;
+          font-size: 0.75rem;
             font-weight: 500;
         }
 
@@ -1238,7 +1238,7 @@ const App: React.FC = () => {
             text-align: right;
         }
 
-    `;
+`;
 
   return (
     <div className="app-container">
@@ -1267,9 +1267,8 @@ const App: React.FC = () => {
             <Button
               variant="ghost"
               onClick={store.toggleTheme}
-              aria-label={`Mudar para tema ${
-                store.theme === 'light' ? 'escuro' : 'claro'
-              }`}
+              aria-label={`Mudar para tema ${store.theme === 'light' ? 'escuro' : 'claro'
+                }`}
             >
               {store.theme === 'light' ? (
                 <Moon className="icon-sm" />
