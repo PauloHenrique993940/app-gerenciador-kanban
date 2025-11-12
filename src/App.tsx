@@ -284,7 +284,11 @@ const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   return (
-    <button className={`button-base button-${variant} ${className}`} {...props}>
+    <button
+      className={`
+        button-base button-${variant} ${className}
+      `}
+    >
       {children}
     </button>
   );
@@ -324,28 +328,57 @@ const CardComponent: React.FC<CardComponentProps> = ({
 
   return (
     <div
-      className="card-component"
       style={{ borderLeftColor: `var(${listColorVar})` }}
       draggable="true"
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       onClick={() => onEditClick(card)}
+      className="
+        card-component
+      "
     >
-      <div className="card-header">
-        <h3 className="card-title">{card.title}</h3>
+      <div
+        className="
+          card-header
+        "
+      >
+        <h3
+          className="
+            card-title
+          "
+        >
+          {card.title}
+        </h3>
         <Button
           variant="ghost"
-          className="card-delete-btn"
           onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
             e.stopPropagation();
             onDelete(card.id);
           }}
+          className="
+            card-delete-btn
+          "
         >
-          <Trash2 className="icon-sm color-red-400" />
+          <Trash2
+            className="
+              icon-sm color-red-400
+            "
+          />
         </Button>
       </div>
-      <p className="card-description">{card.description}</p>
-      <span className="card-date" style={{ color: `var(${listColorVar})` }}>
+      <p
+        className="
+          card-description
+        "
+      >
+        {card.description}
+      </p>
+      <span
+        style={{ color: `var(${listColorVar})` }}
+        className="
+          card-date
+        "
+      >
         {formattedDate}
       </span>
     </div>
@@ -378,33 +411,77 @@ const CardModal: React.FC<CardModalProps> = ({
   };
 
   return (
-    <div className="modal-backdrop" onClick={onClose}>
+    <div
+      onClick={onClose}
+      className="
+        modal-backdrop
+      "
+    >
       <div
-        className="modal-content"
-        onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()} // Evita fechar ao clicar dentro
+        onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
+        className="
+          modal-content
+        "
       >
-        <div className="modal-header">
-          <h2 className="modal-title">Editar Cartão</h2>
-          <Button variant="ghost" onClick={onClose} className="modal-close-btn">
-            <X className="icon-sm" />
+        <div
+          className="
+            modal-header
+          "
+        >
+          <h2
+            className="
+              modal-title
+            "
+          >
+            Editar Cartão
+          </h2>
+          <Button
+            variant="ghost"
+            onClick={onClose}
+            className="
+              modal-close-btn
+            "
+          >
+            <X
+              className="
+                icon-sm
+              "
+            />
           </Button>
         </div>
 
-        <form onSubmit={handleSubmit} className="modal-form">
+        <form
+          onSubmit={handleSubmit}
+          className="
+            modal-form
+          "
+        >
           <div>
-            <label htmlFor="title" className="form-label">
+            <label
+              htmlFor="title"
+              className="
+                form-label
+              "
+            >
               Título
             </label>
             <input
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="form-input"
               required
+              className="
+                form-input
+              "
             />
           </div>
           <div>
-            <label htmlFor="description" className="form-label">
+            <label
+              htmlFor="description"
+              className="
+                form-label
+              "
+            >
               Descrição
             </label>
             <textarea
@@ -412,12 +489,18 @@ const CardModal: React.FC<CardModalProps> = ({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={4}
-              className="form-input form-textarea"
               required
+              className="
+                form-input form-textarea
+              "
             ></textarea>
           </div>
 
-          <div className="modal-actions">
+          <div
+            className="
+              modal-actions
+            "
+          >
             <Button type="submit">Salvar Alterações</Button>
             <Button
               type="button"
@@ -427,7 +510,12 @@ const CardModal: React.FC<CardModalProps> = ({
                 onClose();
               }}
             >
-              <Trash2 className="icon-sm" /> Excluir
+              <Trash2
+                className="
+                  icon-sm
+                "
+              />{' '}
+              Excluir
             </Button>
           </div>
         </form>
@@ -495,30 +583,58 @@ const ListView: React.FC<ListViewProps> = ({
 
   return (
     <div
-      className="list-view"
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
+      className="
+        list-view
+      "
     >
-      <div className="list-header">
-        <h2 className="list-title">
+      <div
+        className="
+          list-header
+        "
+      >
+        <h2
+          className="
+            list-title
+          "
+        >
           <span
-            className="list-color-dot"
             style={{ backgroundColor: `var(${list.colorVar})` }}
+            className="
+              list-color-dot
+            "
           ></span>
           {list.title}
-          <span className="list-count">({cards.length})</span>
+          <span
+            className="
+              list-count
+            "
+          >
+            ({cards.length})
+          </span>
         </h2>
         <Button
           variant="ghost"
-          className="list-add-btn"
           onClick={() => setIsAdding((prev) => !prev)}
+          className="
+            list-add-btn
+          "
         >
-          <Plus className="icon-sm" />
+          <Plus
+            className="
+              icon-sm
+            "
+          />
         </Button>
       </div>
 
-      <div className="list-cards-container custom-scrollbar">
+      <div
+        className="
+          list-cards-container custom-scrollbar
+        "
+      >
         {cards
           .sort((a, b) => b.createdAt - a.createdAt)
           .map((card) => (
@@ -533,16 +649,27 @@ const ListView: React.FC<ListViewProps> = ({
       </div>
 
       {isAdding && (
-        <form onSubmit={handleAddCard} className="new-card-form">
+        <form
+          onSubmit={handleAddCard}
+          className="
+            new-card-form
+          "
+        >
           <input
             type="text"
             placeholder="Título do novo cartão..."
             value={newCardTitle}
             onChange={(e) => setNewCardTitle(e.target.value)}
-            className="form-input new-card-input"
             autoFocus
+            className="
+              form-input new-card-input
+            "
           />
-          <div className="new-card-actions">
+          <div
+            className="
+              new-card-actions
+            "
+          >
             <Button type="submit">Adicionar</Button>
             <Button
               type="button"
@@ -605,39 +732,86 @@ const BoardView: React.FC<BoardViewProps> = ({ store }) => {
   };
 
   return (
-    <div className="board-view">
+    <div
+      className="
+        board-view
+      "
+    >
       {/* Search and Filters Bar */}
-      <header className="board-header">
-        <div className="search-container">
-          <Search className="search-icon" />
+      <header
+        className="
+          board-header
+        "
+      >
+        <div
+          className="
+            search-container
+          "
+        >
+          <Search
+            className="
+              search-icon
+            "
+          />
           <input
             type="text"
             placeholder="Buscar cartões por título ou descrição..."
             value={searchTerm}
             onChange={handleSearchChange}
-            className="form-input search-input"
+            className="
+              form-input search-input
+            "
           />
         </div>
-        <div className="header-actions">
-          <Button variant="secondary" className="header-filter-btn">
-            <Filter className="icon-sm" /> Filtros
+        <div
+          className="
+            header-actions
+          "
+        >
+          <Button
+            variant="secondary"
+            className="
+              header-filter-btn
+            "
+          >
+            <Filter
+              className="
+                icon-sm
+              "
+            />{' '}
+            Filtros
           </Button>
           <input
             type="text"
             placeholder="Nova Lista"
             value={newListTitle}
             onChange={(e) => setNewListTitle(e.target.value)}
-            className="form-input new-list-input"
+            className="
+              form-input new-list-input
+            "
           />
           <Button onClick={handleAddList} disabled={!newListTitle.trim()}>
-            <Plus className="icon-sm" /> Lista
+            <Plus
+              className="
+                icon-sm
+              "
+            />{' '}
+            Lista
           </Button>
         </div>
       </header>
 
       {/* Kanban Columns Container */}
-      <main className="kanban-columns-container custom-scrollbar">
-        <div className="kanban-columns-wrapper">
+      <main
+        className="
+          kanban-columns-container custom-scrollbar
+        "
+      >
+        <div
+          className="
+            kanban-columns-wrapper
+          "
+        >
           {lists
             .sort((a, b) => a.order - b.order) // Ordena as listas
             .map((list) => (
@@ -681,27 +855,63 @@ const SettingsView: React.FC<SettingsViewProps> = ({
   const { theme, toggleTheme } = store;
 
   return (
-    <div className="settings-view">
-      <h1 className="settings-title">Configurações</h1>
+    <div
+      className="
+        settings-view
+      "
+    >
+      <h1
+        className="
+          settings-title
+        "
+      >
+        Configurações
+      </h1>
 
-      <div className="settings-content">
+      <div
+        className="
+          settings-content
+        "
+      >
         {/* Tema Escuro/Claro */}
         <div>
-          <h2 className="settings-subtitle">Aparência</h2>
-          <div className="theme-toggle-container">
+          <h2
+            className="
+              settings-subtitle
+            "
+          >
+            Aparência
+          </h2>
+          <div
+            className="
+              theme-toggle-container
+            "
+          >
             <span>Tema do Aplicativo:</span>
             <Button
               variant="secondary"
               onClick={toggleTheme}
-              className="theme-toggle-button"
+              className="
+                theme-toggle-button
+              "
             >
               {theme === 'light' ? (
                 <>
-                  <Moon className="icon-sm" /> Escuro
+                  <Moon
+                    className="
+                      icon-sm
+                    "
+                  />{' '}
+                  Escuro
                 </>
               ) : (
                 <>
-                  <Sun className="icon-sm" /> Claro
+                  <Sun
+                    className="
+                      icon-sm
+                    "
+                  />{' '}
+                  Claro
                 </>
               )}
             </Button>
@@ -710,20 +920,38 @@ const SettingsView: React.FC<SettingsViewProps> = ({
 
         {/* Informações */}
         <div>
-          <h2 className="settings-subtitle">Informações</h2>
-          <p className="settings-info-text">
+          <h2
+            className="
+              settings-subtitle
+            "
+          >
+            Informações
+          </h2>
+          <p
+            className="
+              settings-info-text
+            "
+          >
             Este é um aplicativo Kanban de demonstração, simulando a arquitetura
             de um projeto React com `dnd-kit`, `Zustand` e `shadcn/ui` em um
             único arquivo.
           </p>
-          <p className="settings-info-text">
+          <p
+            className="
+              settings-info-text
+            "
+          >
             A persistência dos dados é feita usando `localStorage` e o estilo é
             puramente via **CSS Puro**.
           </p>
         </div>
       </div>
 
-      <div className="settings-back-button-container">
+      <div
+        className="
+          settings-back-button-container
+        "
+      >
         <Button onClick={() => setCurrentPage('board')} variant="secondary">
           Voltar para o Quadro
         </Button>
@@ -743,513 +971,533 @@ const App: React.FC = () => {
 
   // Estilos CSS Puros
   const globalStyles = `
-        :root {
-            /* Cores Gerais - Claro */
-            --color-primary: #2563EB;
-            --color-primary-hover: #1D4ED8;
-            --color-secondary: #E5E7EB;
-            --color-secondary-hover: #D1D5DB;
-            --color-destructive: #DC2626;
-            --color-destructive-hover: #B91C1C;
-            --color-text-dark: #18181B;
-            --color-text-light: #FAFAFA;
-            --color-text-medium: #52525B;
-            --color-bg-light: #FAFAFA;
-            --color-bg-medium: #F4F4F5;
-            --color-bg-dark: #FFFFFF;
-            --color-shadow: rgba(0, 0, 0, 0.1);
-            --color-border: #D4D4D8;
-            --color-placeholder: #A1A1AA;
+    :root {
+        /* Cores Gerais - Claro */
+        --color-primary: #2563EB;
+        --color-primary-hover: #1D4ED8;
+        --color-secondary: #E5E7EB;
+        --color-secondary-hover: #D1D5DB;
+        --color-destructive: #DC2626;
+        --color-destructive-hover: #B91C1C;
+        --color-text-dark: #18181B;
+        --color-text-light: #FAFAFA;
+        --color-text-medium: #52525B;
+        --color-bg-light: #FAFAFA;
+        --color-bg-medium: #F4F4F5;
+        --color-bg-dark: #FFFFFF;
+        --color-shadow: rgba(0, 0, 0, 0.1);
+        --color-border: #D4D4D8;
+        --color-placeholder: #A1A1AA;
 
-            /* Cores Listas */
-            --color-list-red: #EF4444;
-            --color-list-blue: #3B82F6;
-            --color-list-green: #10B981;
-            --color-list-yellow: #F59E0B;
-        }
+        /* Cores Listas */
+        --color-list-red: #EF4444;
+        --color-list-blue: #3B82F6;
+        --color-list-green: #10B981;
+        --color-list-yellow: #F59E0B;
+    }
 
-        .dark {
-            /* Cores Gerais - Escuro */
-            --color-secondary: #3F3F46;
-            --color-secondary-hover: #52525B;
-            --color-text-dark: #FAFAFA;
-            --color-text-light: #18181B;
-            --color-text-medium: #A1A1AA;
-            --color-bg-light: #18181B;
-            --color-bg-medium: #27272A;
-            --color-bg-dark: #09090B;
-            --color-shadow: rgba(255, 255, 255, 0.1);
-            --color-border: #3F3F46;
-            --color-placeholder: #52525B;
-        }
+    .dark {
+        /* Cores Gerais - Escuro */
+        --color-secondary: #3F3F46;
+        --color-secondary-hover: #52525B;
+        --color-text-dark: #FAFAFA;
+        --color-text-light: #18181B;
+        --color-text-medium: #A1A1AA;
+        --color-bg-light: #18181B;
+        --color-bg-medium: #27272A;
+        --color-bg-dark: #09090B;
+        --color-shadow: rgba(255, 255, 255, 0.1);
+        --color-border: #3F3F46;
+        --color-placeholder: #52525B;
+    }
 
-        /* Estilos Globais */
-        body {
-            margin: 0;
-            font-family: sans-serif;
-        }
+    /* Estilos Globais */
+    body {
+        margin: 0;
+        font-family: sans-serif;
+    }
 
-        .app-container {
-            height: 100%;
-            background-color: var(--color-bg-light);
-            transition: background-color 300ms, color 300ms;
-            color: var(--color-text-dark);
-            font-family: 'Inter', sans-serif;
-        }
+    .app-container {
+        height: 100%;
+        background-color: var(--color-bg-light);
+        transition: background-color 300ms, color 300ms;
+        color: var(--color-text-dark);
+        font-family: 'Inter', sans-serif;
+    }
 
-        .icon-sm {
-            width: 1.25rem;
-            height: 1.25rem;
-            color: var(--color-text-medium);
-        }
+    .icon-sm {
+        width: 1.25rem;
+        height: 1.25rem;
+        color: var(--color-text-medium);
+    }
 
-        .icon-sm.color-red-400 {
-            color: #F87171; /* Cor específica para ícone de lixeira, mantendo proximidade */
-        }
-        .icon-sm.color-red-400:hover {
-            color: #EF4444;
-        }
+    .icon-sm.color-red-400 {
+        color: #F87171; /* Cor específica para ícone de lixeira, mantendo proximidade */
+    }
+    .icon-sm.color-red-400:hover {
+        color: #EF4444;
+    }
 
-        /* Scrollbar Personalizada */
-        .custom-scrollbar::-webkit-scrollbar {
-            height: 8px;
-            width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background-color: ${store.theme === 'dark' ? '#52525B' : '#C7C7C7'};
-            border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background-color: ${store.theme === 'dark' ? '#18181B' : '#F4F4F5'};
-        }
-        .app-content {
-            height: calc(100vh - 64px);
-            overflow: hidden;
-        }
+    /* Scrollbar Personalizada */
+    .custom-scrollbar::-webkit-scrollbar {
+        height: 8px;
+        width: 8px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background-color: ${store.theme === 'dark' ? '#52525B' : '#C7C7C7'};
+        border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background-color: ${store.theme === 'dark' ? '#18181B' : '#F4F4F5'};
+    }
+    .app-content {
+        height: calc(100vh - 64px);
+        overflow: hidden;
+    }
 
-        /* Componente Botão */
-        .button-base {
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 500;
-            transition: background-color 200ms, opacity 200ms;
-            box-shadow: 0 4px 6px -1px var(--color-shadow), 0 2px 4px -2px var(--color-shadow);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            border: none;
-            cursor: pointer;
-        }
-        .button-base:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
+    /* Componente Botão */
+    .button-base {
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        transition: background-color 200ms, opacity 200ms;
+        box-shadow: 0 4px 6px -1px var(--color-shadow), 0 2px 4px -2px var(--color-shadow);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        border: none;
+        cursor: pointer;
+    }
+    .button-base:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
 
-        .button-primary {
-            background-color: var(--color-primary);
-            color: var(--color-text-light);
-        }
-        .button-primary:hover {
-            background-color: var(--color-primary-hover);
-        }
+    .button-primary {
+        background-color: var(--color-primary);
+        color: var(--color-text-light);
+    }
+    .button-primary:hover {
+        background-color: var(--color-primary-hover);
+    }
 
-        .button-secondary {
-            background-color: var(--color-secondary);
-            color: var(--color-text-dark);
-        }
-        .button-secondary:hover {
-            background-color: var(--color-secondary-hover);
-        }
+    .button-secondary {
+        background-color: var(--color-secondary);
+        color: var(--color-text-dark);
+    }
+    .button-secondary:hover {
+        background-color: var(--color-secondary-hover);
+    }
 
-        .button-destructive {
-            background-color: var(--color-destructive);
-            color: var(--color-text-light);
-        }
-        .button-destructive:hover {
-            background-color: var(--color-destructive-hover);
-        }
+    .button-destructive {
+        background-color: var(--color-destructive);
+        color: var(--color-text-light);
+    }
+    .button-destructive:hover {
+        background-color: var(--color-destructive-hover);
+    }
 
-        .button-ghost {
-            background-color: transparent;
-            color: var(--color-text-dark);
-            box-shadow: none;
-            padding: 0.5rem;
-        }
-        .button-ghost:hover {
-            background-color: var(--color-secondary);
-        }
+    .button-ghost {
+        background-color: transparent;
+        color: var(--color-text-dark);
+        box-shadow: none;
+        padding: 0.5rem;
+    }
+    .button-ghost:hover {
+        background-color: var(--color-secondary);
+    }
 
-        .button-ghost .icon-sm {
-            color: inherit; /* Garante que o ícone herde a cor do texto do botão */
-        }
+    .button-ghost .icon-sm {
+        color: inherit; /* Garante que o ícone herde a cor do texto do botão */
+    }
 
-        .button-ghost.card-delete-btn {
-            padding: 0.25rem;
-            height: auto;
-        }
+    .button-ghost.card-delete-btn {
+        padding: 0.25rem;
+        height: auto;
+    }
 
 
-        /* Navbar */
-        .navbar {
-            background-color: var(--color-bg-dark);
-            box-shadow: 0 1px 3px 0 var(--color-shadow);
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
+    /* Navbar */
+    .navbar {
+        background-color: var(--color-bg-dark);
+        box-shadow: 0 1px 3px 0 var(--color-shadow);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    .navbar-content {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 1rem;
+        height: 4rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .navbar-logo {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: var(--color-primary);
+    }
+    .navbar-links {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    @media (min-width: 640px) {
         .navbar-content {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 1rem;
-            height: 4rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            padding: 0 1.5rem;
         }
-        .navbar-logo {
-            font-size: 1.25rem;
-            font-weight: 800;
-            color: var(--color-primary);
+    }
+    @media (min-width: 1024px) {
+        .navbar-content {
+            padding: 0 2rem;
         }
-        .navbar-links {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        @media (min-width: 640px) {
-            .navbar-content {
-                padding: 0 1.5rem;
-            }
-        }
-        @media (min-width: 1024px) {
-            .navbar-content {
-                padding: 0 2rem;
-            }
-        }
+    }
 
-        /* Board View */
-        .board-view {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            padding: 1.5rem;
-            gap: 1rem;
-        }
+    /* Board View */
+    .board-view {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        padding: 1.5rem;
+        gap: 1rem;
+    }
 
-        /* Header (Search/Add List) */
+    /* Header (Search/Add List) */
+    .board-header {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        background-color: var(--color-bg-dark);
+        padding: 1rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 6px -1px var(--color-shadow);
+    }
+    .search-container {
+        position: relative;
+        flex-grow: 1;
+    }
+    .search-icon {
+        position: absolute;
+        left: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 1.25rem;
+        height: 1.25rem;
+        color: var(--color-placeholder);
+    }
+    .search-input {
+        width: 100%;
+        padding-left: 2.5rem;
+    }
+    .header-actions {
+        display: flex;
+        gap: 1rem;
+    }
+    .new-list-input {
+        flex-grow: 1;
+    }
+
+    @media (min-width: 640px) {
         .board-header {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            background-color: var(--color-bg-dark);
-            padding: 1rem;
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 6px -1px var(--color-shadow);
+            flex-direction: row;
+            align-items: center;
         }
         .search-container {
-            position: relative;
-            flex-grow: 1;
-        }
-        .search-icon {
-            position: absolute;
-            left: 0.75rem;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 1.25rem;
-            height: 1.25rem;
-            color: var(--color-placeholder);
-        }
-        .search-input {
-            width: 100%;
-            padding-left: 2.5rem;
+            width: auto;
         }
         .header-actions {
-            display: flex;
-            gap: 1rem;
+            width: auto;
         }
-        .new-list-input {
-            flex-grow: 1;
-        }
+    }
 
-        @media (min-width: 640px) {
-            .board-header {
-                flex-direction: row;
-                align-items: center;
-            }
-            .search-container {
-                width: auto;
-            }
-            .header-actions {
-                width: auto;
-            }
-        }
+    /* Form Inputs */
+    .form-input {
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid var(--color-border);
+        border-radius: 0.5rem;
+        background-color: var(--color-bg-dark);
+        color: var(--color-text-dark);
+        transition: border-color 200ms, background-color 200ms;
+    }
+    .form-input:focus {
+        border-color: var(--color-primary);
+        outline: 2px solid var(--color-primary);
+        outline-offset: 0px;
+    }
+    .form-textarea {
+        resize: vertical;
+    }
 
-        /* Form Inputs */
-        .form-input {
-            width: 100%;
-            padding: 0.5rem 0.75rem;
-            border: 1px solid var(--color-border);
-            border-radius: 0.5rem;
-            background-color: var(--color-bg-dark);
-            color: var(--color-text-dark);
-            transition: border-color 200ms, background-color 200ms;
-        }
-        .form-input:focus {
-            border-color: var(--color-primary);
-            outline: 2px solid var(--color-primary);
-            outline-offset: 0px;
-        }
-        .form-textarea {
-            resize: vertical;
-        }
+    /* Kanban Columns Container */
+    .kanban-columns-container {
+        flex-grow: 1;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding-bottom: 1rem; /* Espaço para o scrollbar */
+    }
+    .kanban-columns-wrapper {
+        display: flex;
+        gap: 1.5rem;
+        height: 100%;
+        min-width: max-content;
+    }
 
-        /* Kanban Columns Container */
-        .kanban-columns-container {
-            flex-grow: 1;
-            overflow-x: auto;
-            overflow-y: hidden;
-            padding-bottom: 1rem; /* Espaço para o scrollbar */
-        }
-        .kanban-columns-wrapper {
-            display: flex;
-            gap: 1.5rem;
-            height: 100%;
-            min-width: max-content;
-        }
+    /* List View (Coluna) */
+    .list-view {
+        flex-shrink: 0;
+        width: 420px; /* 80w ≈ 320px */
+        height: auto;
+        background-color: var(--color-bg-medium);
+        padding: 1rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 10px 15px -3px var(--color-shadow);
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        transition: box-shadow 300ms;
+        
+    }
+    .drag-over-list {
+        box-shadow: 0 0 0 2px var(--color-primary);
+    }
 
-        /* List View (Coluna) */
-        .list-view {
-            flex-shrink: 0;
-            width: 420px; /* 80w ≈ 320px */
-            height: auto;
-            background-color: var(--color-bg-medium);
-            padding: 1rem;
-            border-radius: 0.75rem;
-            box-shadow: 0 10px 15px -3px var(--color-shadow);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            transition: box-shadow 300ms;
-            
-        }
-        .drag-over-list {
-            box-shadow: 0 0 0 2px var(--color-primary);
-        }
+    .list-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--color-border);
+    }
+    .list-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--color-text-dark);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .list-color-dot {
+        width: 0.75rem;
+        height: 0.75rem;
+        border-radius: 50%;
+    }
+    .list-count {
+        margin-left: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 400;
+        color: var(--color-text-medium);
+    }
+    .list-add-btn {
+        color: var(--color-text-medium);
+    }
+    .list-add-btn:hover {
+        color: var(--color-primary);
+    }
 
-        .list-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid var(--color-border);
-        }
-        .list-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: var(--color-text-dark);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .list-color-dot {
-            width: 0.75rem;
-            height: 0.75rem;
-            border-radius: 50%;
-        }
-        .list-count {
-            margin-left: 0.5rem;
-            font-size: 0.875rem;
-            font-weight: 400;
-            color: var(--color-text-medium);
-        }
-        .list-add-btn {
-            color: var(--color-text-medium);
-        }
-        .list-add-btn:hover {
-            color: var(--color-primary);
-        }
+    .list-cards-container {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding-right: 0.25rem;
+    }
 
-        .list-cards-container {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding-right: 0.25rem;
-        }
-
-        /* Form Novo Cartão */
-        .new-card-form {
-            margin-top: 1rem;
-            padding: 0.75rem;
-            background-color: var(--color-bg-dark);
-            border-radius: 0.5rem;
-            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
-        }
-        .new-card-input {
-            margin-bottom: 0.5rem;
-            padding: 0.25rem 0.5rem;
-        }
-        .new-card-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 0.5rem;
-        }
-        .new-card-actions .button-base {
-            width: 100%;
-            padding: 0.25rem;
-        }
+    /* Form Novo Cartão */
+    .new-card-form {
+        margin-top: 1rem;
+        padding: 0.75rem;
+        background-color: var(--color-bg-dark);
+        border-radius: 0.5rem;
+        box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+    }
+    .new-card-input {
+        margin-bottom: 0.5rem;
+        padding: 0.25rem 0.5rem;
+    }
+    .new-card-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
+    }
+    .new-card-actions .button-base {
+        width: 100%;
+        padding: 0.25rem;
+    }
 
 
-        /* Card Component */
-        .card-component {
-            background-color: var(--color-bg-dark);
-            padding: 1rem;
-            border-radius: 0.75rem;
-            box-shadow: 0 1px 3px 0 var(--color-shadow);
-            cursor: grab;
-            margin-bottom: 0.75rem;
-            border-left: 4px solid;
-            transition: all 300ms;
-        }
-        .card-component:hover {
-            box-shadow: 0 10px 15px -3px var(--color-shadow);
-        }
-        .dragging-opacity {
-            opacity: 0.5;
-        }
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-        .card-title {
-            font-weight: 600;
-            color: var(--color-text-dark);
-            line-height: 1.375;
-        }
-        /* O restante dos estilos CSS (omitido para brevidade) */
-        .card-description {
-            font-size: 0.875rem;
-            color: var(--color-text-medium);
-            margin-top: 0.25rem;
-            margin-bottom: 0.5rem;
-        }
-        .card-date {
-          font-size: 0.75rem;
-            font-weight: 500;
-        }
+    /* Card Component */
+    .card-component {
+        background-color: var(--color-bg-dark);
+        padding: 1rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 1px 3px 0 var(--color-shadow);
+        cursor: grab;
+        margin-bottom: 0.75rem;
+        border-left: 4px solid;
+        transition: all 300ms;
+    }
+    .card-component:hover {
+        box-shadow: 0 10px 15px -3px var(--color-shadow);
+    }
+    .dragging-opacity {
+        opacity: 0.5;
+    }
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+    .card-title {
+        font-weight: 600;
+        color: var(--color-text-dark);
+        line-height: 1.375;
+    }
+    .card-description {
+        font-size: 0.875rem;
+        color: var(--color-text-medium);
+        margin-top: 0.25rem;
+        margin-bottom: 0.5rem;
+    }
+    .card-date {
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
 
-        /* Modal */
-        .modal-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.4);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 50;
-        }
-        .modal-content {
-            background-color: var(--color-bg-dark);
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 20px 25px -5px var(--color-shadow);
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-        .modal-close-btn {
-            color: var(--color-text-medium);
-        }
-        .modal-form div {
-            margin-bottom: 1rem;
-        }
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        .modal-actions {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 2rem;
-            gap: 1rem;
-        }
-        .modal-actions .button-base {
-            flex-grow: 1;
-        }
-        @media (min-width: 480px) {
-            .modal-actions .button-base {
-                flex-grow: 0;
-            }
-        }
-        
-        /* Settings View */
-        .settings-view {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background-color: var(--color-bg-dark);
-            border-radius: 0.75rem;
-            box-shadow: 0 10px 15px -3px var(--color-shadow);
-        }
-        .settings-title {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid var(--color-border);
-            padding-bottom: 0.5rem;
-        }
-        .settings-content > div {
-            margin-bottom: 2rem;
-        }
-        .settings-subtitle {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--color-primary);
-            margin-bottom: 1rem;
-        }
-        .theme-toggle-container {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        .theme-toggle-button {
-            min-width: 100px;
-        }
-        .settings-info-text {
-            color: var(--color-text-medium);
-            margin-bottom: 0.5rem;
-        }
-        .settings-back-button-container {
-            margin-top: 3rem;
-            text-align: right;
-        }
-
+    /* Modal */
+    .modal-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 50;
+    }
+    .modal-content {
+        background-color: var(--color-bg-dark);
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: 0 20px 25px -5px var(--color-shadow);
+    }
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    .modal-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+    .modal-close-btn {
+        color: var(--color-text-medium);
+    }
+    .modal-form div {
+        margin-bottom: 1rem;
+    }
+    .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    .modal-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2rem;
+        gap: 1rem;
+    }
+    .modal-actions .button-base {
+        flex-grow: 1;
+    }
+    @media (min-width: 480px) {
+        .modal-actions .button-base {
+            flex-grow: 0;
+        }
+    }
+    
+    /* Settings View */
+    .settings-view {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background-color: var(--color-bg-dark);
+        border-radius: 0.75rem;
+        box-shadow: 0 10px 15px -3px var(--color-shadow);
+    }
+    .settings-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        border-bottom: 1px solid var(--color-border);
+        padding-bottom: 0.5rem;
+    }
+    .settings-content > div {
+        margin-bottom: 2rem;
+    }
+    .settings-subtitle {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--color-primary);
+        margin-bottom: 1rem;
+    }
+    .theme-toggle-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    .theme-toggle-button {
+        min-width: 100px;
+    }
+    .settings-info-text {
+        color: var(--color-text-medium);
+        margin-bottom: 0.5rem;
+    }
+    .settings-back-button-container {
+        margin-top: 3rem;
+        text-align: right;
+    }
 `;
 
   return (
-    <div className="app-container">
+    <div
+      className="
+        app-container
+      "
+    >
       {/* Insere os estilos CSS globais dinamicamente. */}
       <style>{globalStyles}</style>
 
       {/* Navbar */}
-      <nav className="navbar">
-        <div className="navbar-content">
-          <span className="navbar-logo">Kanban Board (Simulado)</span>
-          <div className="navbar-links">
+      <nav
+        className="
+          navbar
+        "
+      >
+        <div
+          className="
+            navbar-content
+          "
+        >
+          <span
+            className="
+              navbar-logo
+            "
+          >
+            Kanban Board (Simulado)
+          </span>
+          <div
+            className="
+              navbar-links
+            "
+          >
             <Button
               variant="ghost"
               onClick={() => setCurrentPage('board')}
@@ -1262,7 +1510,12 @@ const App: React.FC = () => {
               onClick={() => setCurrentPage('settings')}
               aria-label="Configurações"
             >
-              <Settings className="icon-sm" /> Config.
+              <Settings
+                className="
+                  icon-sm
+                "
+              />{' '}
+              Config.
             </Button>
             <Button
               variant="ghost"
@@ -1271,9 +1524,17 @@ const App: React.FC = () => {
                 }`}
             >
               {store.theme === 'light' ? (
-                <Moon className="icon-sm" />
+                <Moon
+                  className="
+                    icon-sm
+                  "
+                />
               ) : (
-                <Sun className="icon-sm" />
+                <Sun
+                  className="
+                    icon-sm
+                  "
+                />
               )}
             </Button>
           </div>
@@ -1281,7 +1542,11 @@ const App: React.FC = () => {
       </nav>
 
       {/* Conteúdo Principal */}
-      <div className="app-content">
+      <div
+        className="
+          app-content
+        "
+      >
         {currentPage === 'board' ? (
           <BoardView store={store} />
         ) : (
